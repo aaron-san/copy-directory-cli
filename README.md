@@ -1,5 +1,15 @@
 # Copy Directory CLI
 
+This CLI can be used to copy the content of all files in a directory and append to a text file
+
+The puppeteer package is used to collect content as HTML and render that HTML and save it as a PDF.
+
+```bash
+npx puppeteer browsers install chrome
+```
+
+## Make CLI
+
 1. Add a Shebang to the top of the script
 
 ```js
