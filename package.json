@@ -1,8 +1,8 @@
 {
-  "name": "copy-directory-cli",
+  "name": "code-to-text",
   "version": "1.0.0",
   "description": "",
-  "main": "copyDirectoryCLI.js",
+  "main": "codeToText.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
   },

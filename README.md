@@ -2,7 +2,31 @@
 
 This CLI can be used to copy the content of all files in a directory and append to a text file
 
+## Usage
+
+1. Move to the project directory of any project you wish to gather all containing scripts into a PDF.
+
+```bash
+cd project-dir
+```
+
+2. run copydir
+
+```bash
+copydir
+```
+
 The puppeteer package is used to collect content as HTML and render that HTML and save it as a PDF.
+
+## Features:
+
+✅ Support for .js, .ts, .jsx, .tsx
+✅ Syntax highlighting using Highlight.js
+✅ Roboto Mono font
+✅ Wrapping long lines
+✅ Writing to a pdf/ subdirectory
+✅ Page headers/footers
+✅ Auto-opening the pdf/ folder after generation
 
 ```bash
 npx puppeteer browsers install chrome

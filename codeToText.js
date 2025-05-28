@@ -11,11 +11,10 @@ const projectDirName = path.basename(rootDir);
 const excludeDirs = (
   process.env.EXCLUDE_DIRS || "node_modules,.git,dist"
 ).split(",");
-const allowedExtensions = (process.env.ALLOWED_EXTENSIONS || ".js,.ts").split(
-  ","
-);
+const allowedExtensions = (
+  process.env.ALLOWED_EXTENSIONS || ".js,.ts,.jsx,.tsx"
+).split(",");
 const maxFileSize = parseInt(process.env.MAX_FILE_SIZE_MB || "1") * 1024 * 1024;
-const outputPrefix = process.env.OUTPUT_PREFIX || "output";
 const outputDir = path.join(process.cwd(), "pdf");
 
 if (!fs.existsSync(outputDir)) {
@@ -26,10 +25,6 @@ let outputFileIndex = 1;
 let currentSize = 0;
 let fileContents = [];
 
-function getOutputFilePath() {
-  return path.join(outputDir, `${projectDirName}-${outputFileIndex}.pdf`);
-}
-
 function shouldExclude(filePath) {
   return excludeDirs.some((exclude) =>
     filePath.includes(path.sep + exclude + path.sep)
@@ -38,7 +33,7 @@ function shouldExclude(filePath) {
 
 function isHiddenOrInvalid(filePath) {
   const baseName = path.basename(filePath);
-  const ext = path.extname(filePath);
+  const ext = path.extname(filePath).toLowerCase();
   return baseName.startsWith(".") || !allowedExtensions.includes(ext);
 }
 
@@ -47,12 +42,16 @@ function escapeHtml(str) {
 }
 
 function addToContent(relativePath, content) {
+  const ext = path.extname(relativePath).toLowerCase();
+  let lang = "javascript";
+  if (ext === ".ts" || ext === ".tsx") lang = "typescript";
+
   const htmlSection = `
     <section style="margin-bottom: 40px; page-break-inside: avoid;">
       <h2 style="font-family: monospace; font-size: 14px; background: #eee; padding: 8px;">
         FILE: ${relativePath}
       </h2>
-      <pre><code class="language-javascript">${escapeHtml(content)}</code></pre>
+      <pre><code class="language-${lang}">${escapeHtml(content)}</code></pre>
     </section>
   `;
   fileContents.push(htmlSection);
@@ -120,14 +119,13 @@ async function saveAsPDF(index, htmlContent) {
           page-break-inside: avoid;
         }
         pre {
-          white-space: pre-wrap;       /* wraps long lines */
-          word-break: break-word;      /* breaks long words */
+          white-space: pre-wrap;
+          word-break: break-word;
           overflow-wrap: break-word;
-          padding: 12px;
-          border-radius: 6px;
-          background:rgba(248, 248, 248, 0.99);
+          // padding: 4px;
+          // border-radius: 6px;
+          // background:rgb(241, 239, 239);
         }
-
         code {
           font-family: 'Roboto Mono', monospace;
           font-size: 12px;
@@ -154,10 +152,10 @@ async function saveAsPDF(index, htmlContent) {
     format: "A4",
     printBackground: true,
     margin: {
-      top: "0.5in",
-      bottom: "0.5in",
-      left: "0.5in",
-      right: "0.5in",
+      top: "1in",
+      bottom: "1in",
+      left: "1in",
+      right: "1in",
     },
     displayHeaderFooter: true,
     headerTemplate: `
@@ -167,7 +165,8 @@ async function saveAsPDF(index, htmlContent) {
     `,
     footerTemplate: `
       <div style="font-family: Roboto Mono, monospace; font-size: 10px; padding: 0 20px; width: 100%; text-align: center;">
-        Page <span class="pageNumber"></span> of <span class="totalPages"></span>
+        <span class="pageNumber"></span> of <span class="totalPages"></span>
+        <span style="float: right;">${new Date().toLocaleDateString()}  ${new Date().toLocaleTimeString()}</span>
       </div>
     `,
   });
