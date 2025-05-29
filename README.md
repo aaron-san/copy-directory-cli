@@ -47,9 +47,9 @@ npx puppeteer browsers install chrome
 {
   "name": "copydir",
   "version": "1.0.0",
-  "main": "copyDirectoryCLI.js",
+  "main": "codeExporter.js",
   "bin": {
-    "copydir": "./copyDirectoryCLI.js"
+    "copydir": "./codeExporter.js"
   },
   ...
 ```
@@ -60,8 +60,12 @@ npx puppeteer browsers install chrome
 # This tells npm to create a global symlink to your script, making the copydir command available anywhere in the terminal.
 npm link
 
+# Overwrite symlink
+npm link --force
+
 # To Unlink Later (if needed)
 # If you ever want to remove it, just run:
 
 npm unlink -g
+
 ```
